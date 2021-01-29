@@ -27,10 +27,16 @@ public abstract class Canvas2D extends JPanel {
    */
   private Vector2f ur;
 
+  public Graphics2D g2D;
+
+  // needed for lombok
+  private Canvas2D() {}
+
   public Canvas2D(int width, int height, Vector2f ll, Vector2f ur) {
     setSize(width, height);
     this.ll = new Vector2f(ll);
     this.ur = new Vector2f(ur);
+    g2D = (Graphics2D) getGraphics();
   }
 
   public void setupListener() {

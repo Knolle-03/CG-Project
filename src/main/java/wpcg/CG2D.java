@@ -5,33 +5,128 @@
 
 package wpcg;
 
-import wpcg.base.canvas2d.Canvas2D;
-import wpcg.base.canvas2d.SimpleExampleCanvas2D;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import wpcg.bezier._2D.viz.DeCasteljauViz;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Lecture support application for 2D scenes
  */
-public class CG2D extends JFrame {
+public class CG2D extends JFrame implements ChangeListener, PropertyChangeListener {
+    int WIDTH = 1000;
+    int HEIGHT = 600;
 
-  public CG2D() {
+    Color OPTIONS_MENU_COLOR = Color.darkGray;
 
-    // Set the 2D canvas here
-    Canvas2D curveCanvas2D = new SimpleExampleCanvas2D(600, 600);
-    curveCanvas2D.setupListener();
-    getContentPane().add(curveCanvas2D);
+    JPanel optionsMenu;
+    JSlider incrementSlider;
+    JLabel incrementLabel;
+    JToggleButton showIncrementsToggleButton;
+    JButton showHelperLinesButton;
+    JButton resetButton;
 
-    // Layout
-    setLayout(new BorderLayout());
-    setTitle("WP Computergraphics (2D)");
-    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    setSize(800, 600);
-    setVisible(true);
-  }
+    DeCasteljauViz canvas;
 
-  public static void main(String[] args) {
-    new CG2D();
-  }
+    public CG2D() {
+
+        // setup CG2D
+        this.setVisible(true);
+        this.setLayout(new BorderLayout(5, 5));
+        this.setSize(WIDTH, HEIGHT);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // setup canvas
+        canvas = new DeCasteljauViz(this);
+        canvas.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+
+
+        // setup options menu
+        optionsMenu = new JPanel();
+        optionsMenu.setBackground(OPTIONS_MENU_COLOR);
+        optionsMenu.setPreferredSize(new Dimension(300, HEIGHT));
+        optionsMenu.setLayout(new FlowLayout());
+
+        // setup increment slider
+        incrementSlider = new JSlider(10, 900);
+        optionsMenu.add(incrementSlider);
+        incrementSlider.addChangeListener(canvas);
+        //incrementSlider.setPaintTicks(true);
+        //incrementSlider.setPaintLabels(true);
+        incrementSlider.setMajorTickSpacing(10);
+        incrementSlider.setBounds(0,0, WIDTH, HEIGHT);
+        incrementSlider.setBackground(OPTIONS_MENU_COLOR);
+        incrementSlider.setSnapToTicks(true);
+        incrementSlider.setPreferredSize(new Dimension(200, 50));
+
+        // setup increment label
+        incrementLabel = new JLabel();
+        incrementLabel.addPropertyChangeListener(this);
+        incrementLabel.setForeground(Color.CYAN);
+        optionsMenu.add(incrementLabel);
+        incrementLabel.setText("t: " + incrementSlider.getValue() / 100.0);
+
+
+
+
+
+
+        this.add(optionsMenu, BorderLayout.EAST);
+        this.add(canvas, BorderLayout.CENTER);
+
+
+
+
+
+    }
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(CG2D::new);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+
+
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+    }
+
+    public JPanel getOptionsMenu() {
+        return optionsMenu;
+    }
+
+    public JSlider getIncrementSlider() {
+        return incrementSlider;
+    }
+
+    public JLabel getIncrementLabel() {
+        return incrementLabel;
+    }
+
+    public JToggleButton getShowIncrementsToggleButton() {
+        return showIncrementsToggleButton;
+    }
+
+    public JButton getShowHelperLinesButton() {
+        return showHelperLinesButton;
+    }
+
+    public JButton getResetButton() {
+        return resetButton;
+    }
+
+    public DeCasteljauViz getCanvas() {
+        return canvas;
+    }
 }

@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = 'wpcg.CG3D'
+mainClassName = 'wpcg.CG2D'
 
 repositories {
     mavenCentral()
@@ -18,6 +18,10 @@ dependencies {
     implementation "${jme3.g}:jme3-lwjgl:${jme3.v}"
     implementation 'org.json:json:20190722'
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.2')
+
+    compile group: 'org.processing', name: 'core', version: '2.2.1'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
 }
 
 test {

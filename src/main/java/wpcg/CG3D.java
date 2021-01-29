@@ -2,8 +2,8 @@ package wpcg;
 
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
-import wpcg.a1.IntroScene;
 import wpcg.base.Scene;
+import wpcg.bezier._3D.IntroScene;
 import wpcg.ui.ComputergraphicsJMEApp;
 import wpcg.ui.ComputergraphicsFrame;
 
