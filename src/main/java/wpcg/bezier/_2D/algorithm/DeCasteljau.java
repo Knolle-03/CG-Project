@@ -47,6 +47,8 @@ public class DeCasteljau {
         //last index of controlPoints
         int n = controlPoints.size() - 1;
 
+
+
         // add control points to aux list
         for (int i = 0; i <= n; i++) {
             auxList.add(i, new Vector2f(controlPoints.get(i)));
