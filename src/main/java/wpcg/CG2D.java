@@ -5,21 +5,17 @@
 
 package wpcg;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import wpcg.bezier._2D.viz.DeCasteljauViz;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * Lecture support application for 2D scenes
  */
-public class CG2D extends JFrame implements ChangeListener, PropertyChangeListener {
+public class CG2D extends JFrame implements ChangeListener {
     int WIDTH = 1000;
     int HEIGHT = 600;
 
@@ -30,7 +26,12 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
     JSlider incrementSlider;
     JLabel incrementLabel;
     JToggleButton showIncrementsToggleButton;
-    JCheckBox showHelperLinesBox;
+    JCheckBox showControlPointLinesCheckBox;
+    JCheckBox showControlPointsCheckBox;
+    JCheckBox showHelperLinesCheckBox;
+    JCheckBox showHelperPointsCheckBox;
+    JCheckBox showCurveLinesCheckBox;
+    JCheckBox showCurvePointsCheckBox;
     JButton resetButton;
 
     DeCasteljauViz canvas;
@@ -55,7 +56,7 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
         optionsMenu.setLayout(new FlowLayout());
 
         // setup increment slider
-        incrementSlider = new JSlider(10, 900);
+        incrementSlider = new JSlider(5, 990);
         optionsMenu.add(incrementSlider);
         incrementSlider.addChangeListener(canvas);
         incrementSlider.setPaintTicks(true);
@@ -73,15 +74,29 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
         optionsMenu.add(incrementLabel);
         incrementLabel.setText("t: " + incrementSlider.getValue() / 100.0);
 
-        // setup helper lines checkbox
-        showHelperLinesBox = new JCheckBox("Show helper lines", true);
-        showHelperLinesBox.addChangeListener(canvas);
-        showHelperLinesBox.setForeground(OPTIONS_MENU_TEXT_COLOR);
-        showHelperLinesBox.setBackground(OPTIONS_MENU_COLOR);
-        optionsMenu.add(showHelperLinesBox);
+        // setup control point lines check box
+        showControlPointLinesCheckBox = new JCheckBox("Show ctrl point lines", true);
+        configureCheckBox(showControlPointLinesCheckBox);
 
+        // setup control points check box
+        showControlPointsCheckBox = new JCheckBox("Show ctrl points", true);
+        configureCheckBox(showControlPointsCheckBox);
 
+        // setup helper lines check box
+        showHelperLinesCheckBox = new JCheckBox("Show helper lines", true);
+        configureCheckBox(showHelperLinesCheckBox);
 
+        // setup helper point check box
+        showHelperPointsCheckBox = new JCheckBox("Show helper points", true);
+        configureCheckBox(showHelperPointsCheckBox);
+
+        // setup curve lines check box
+        showCurveLinesCheckBox = new JCheckBox("Show curve lines", true);
+        configureCheckBox(showCurveLinesCheckBox);
+
+        // setup curve points check box
+        showCurvePointsCheckBox = new JCheckBox("Show curve points", true);
+        configureCheckBox(showCurvePointsCheckBox);
 
 
 
@@ -107,10 +122,13 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
 
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-
+    private void configureCheckBox(JCheckBox checkBox) {
+        checkBox.addChangeListener(canvas);
+        checkBox.setForeground(OPTIONS_MENU_TEXT_COLOR);
+        checkBox.setBackground(OPTIONS_MENU_COLOR);
+        optionsMenu.add(checkBox);
     }
+
 
     public JPanel getOptionsMenu() {
         return optionsMenu;
@@ -136,7 +154,27 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
         return canvas;
     }
 
-    public JCheckBox getShowHelperLinesBox() {
-        return showHelperLinesBox;
+    public JCheckBox getShowControlPointLinesCheckBox() {
+        return showControlPointLinesCheckBox;
+    }
+
+    public JCheckBox getShowControlPointsCheckBox() {
+        return showControlPointsCheckBox;
+    }
+
+    public JCheckBox getShowHelperLinesCheckBox() {
+        return showHelperLinesCheckBox;
+    }
+
+    public JCheckBox getShowHelperPointsCheckBox() {
+        return showHelperPointsCheckBox;
+    }
+
+    public JCheckBox getShowCurveLinesCheckBox() {
+        return showCurveLinesCheckBox;
+    }
+
+    public JCheckBox getShowCurvePointsCheckBox() {
+        return showCurvePointsCheckBox;
     }
 }

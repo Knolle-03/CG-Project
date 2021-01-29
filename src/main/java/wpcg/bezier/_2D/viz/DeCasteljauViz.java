@@ -1,13 +1,10 @@
 package wpcg.bezier._2D.viz;
 
 import com.jme3.math.Vector2f;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import wpcg.CG2D;
 import wpcg.base.canvas2d.Canvas2D;
 import wpcg.bezier._2D.algorithm.DeCasteljau;
 
-import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -15,23 +12,35 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
 import java.util.List;
+
+
 public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeListener {
     private static final int BOUNDS = 300;
     private HashMap<Float, List<Vector2f>> intermediateSteps;
     private final ArrayList<Vector2f> controlPoints = new ArrayList<>();
-    private DeCasteljau casteljauMath;
+    private final DeCasteljau casteljauMath;
     private double increment = .01;
-    private CG2D container;
+    private final CG2D container;
     private Graphics2D g2D;
-    private boolean showHelperLines = true;
+    private final List<Color> colors = new ArrayList<>();
+    private Color currentColor;
 
+    private boolean showControlPointLines = true;
+    private boolean showControlPoints = true;
+    private boolean showHelperLines = true;
+    private boolean showHelperPoints = true;
+    private boolean showCurveLines = true;
+    private boolean showCurvePoints = true;
 
 
     public DeCasteljauViz(CG2D container) {
         super(600, 600, new Vector2f(-BOUNDS, -BOUNDS), new Vector2f(BOUNDS, BOUNDS));
         this.container = container;
 
-
+        colors.add(new Color(255, 0, 0));
+        colors.add(new Color(0, 0, 255));
+        //colors.add(new Color(0, 255,0 ));
+        currentColor = colors.get(0);
         addMouseListener(this);
 
         controlPoints.add(new Vector2f(-250,0));
@@ -52,74 +61,80 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         if (g2D == null) g2D = g;
         g.setBackground(Color.lightGray);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setStroke(new BasicStroke(2));
+
 
 
         if (!controlPoints.isEmpty()) {
             g.clearRect(0,0, getWidth(), getHeight());
 
-            // first cp
-            drawPoint(g, controlPoints.get(0), Color.RED);
-            // draw remaining cps and lines between them
-            for (int i = 1; i < controlPoints.size(); i++) {
-                drawLine(g, controlPoints.get(i), controlPoints.get(i - 1), Color.BLACK);
-                drawPoint(g, controlPoints.get(i), Color.RED);
+
+            if (showControlPoints) {
+                // first cp
+                drawPoint(g, controlPoints.get(0), Color.RED);
+                // draw remaining cps and lines between them
+                for (int i = 1; i < controlPoints.size(); i++) {
+                    drawPoint(g, controlPoints.get(i), Color.RED);
+                }
             }
+
+            if (showControlPointLines) {
+                for (int i = 1; i < controlPoints.size(); i++) {
+                    drawLine(g, controlPoints.get(i), controlPoints.get(i - 1), Color.BLACK);
+                }
+            }
+
 
 
                 for (List<Vector2f> vList : intermediateSteps.values()) {
                     int currentSkippingIndex = controlPoints.size() - 2;
                     int offsetToNextSkippingIndex = currentSkippingIndex;
-                    for (int i = 0; i < vList.size() - 1; i++) {
-                        drawPoint(g, vList.get(i), Color.BLUE);
+
+                    if (showHelperPoints) {
+                        // draw helper points
+                        for (int i = 0; i < vList.size() - 1; i++) {
+                            drawPoint(g, vList.get(i), Color.BLUE);
+                        }
                     }
 
                     if (showHelperLines) {
+                        // draw helper lines
                         for (int i = 0; i < vList.size() - 1; i++) {
 
                             // skip line drawing between "layers"
                             if (i == currentSkippingIndex) {
+
+                                currentColor = getOtherColor();
+
                                 currentSkippingIndex += offsetToNextSkippingIndex;
                                 // offset decreases each "layer" by one
                                 offsetToNextSkippingIndex -= 1;
                                 continue;
                             }
 
-                            drawLine(g, vList.get(i), vList.get(i + 1), Color.DARK_GRAY);
+                            drawLine(g, vList.get(i), vList.get(i + 1), currentColor);
                         }
                     }
-                    //drawPoint(g, vList.get(vList.size() - 1), Color.cyan);
 
             }
+                if (showCurvePoints) {
+                    // draw curve points
+                    for (Vector2f curvePoint : casteljauMath.getCurvePoints().values()) {
+                        drawPoint(g, curvePoint, Color.CYAN);
+                    }
 
-            for (Vector2f curvePoint : casteljauMath.getCurvePoints().values()) {
-                drawPoint(g, curvePoint, Color.CYAN);
-            }
+                }
+
+                if (showCurveLines) {
+                    List<Vector2f> curvePoints = casteljauMath.getCurvePointList();
+
+                    for (int i = 0; i < curvePoints.size() - 1; i++) {
+                        drawLine(g, curvePoints.get(i), curvePoints.get(i + 1), Color.YELLOW);
+                    }
+                }
 
 
 
-
-
-
-
-
-
-
-
-//            for (Map.Entry<Float, List<Vector2f>> entry : intermediateSteps.entrySet()) {
-//                for (Vector2f val : entry.getValue()) {
-//                    //drawPoint(g, val, Color.BLUE);
-//                }
-//            }
-//            System.out.println( intermediateSteps.get(0.01f));
-//
-//            List<Vector2f> vecList = intermediateSteps.get(0.01f);
-//            for (Vector2f vec : vecList) {
-//                drawPoint(g, vec, Color.BLACK);
-//            }
-//
-//            for (Vector2f point : casteljauMath.getCurvePoints().values()) {
-//                drawPoint(g, point, Color.YELLOW);
-//            }
         }
     }
 
@@ -179,16 +194,28 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
             float t = Math.round(container.getIncrementSlider().getValue() / 10.0);
             t /= 100;
-            System.out.println(t);
             casteljauMath.setIncrement(t);
             casteljauMath.reCalcCurvePoints();
             intermediateSteps = casteljauMath.getIntermediateSteps();
-            System.out.println("lol");
             container.getIncrementLabel().setText("t: " + t);
             repaint();
-        } else if (e.getSource() == container.getShowHelperLinesBox()) {
-            setShowHelperLines(container.getShowHelperLinesBox().isSelected());
-            System.out.println(isShowHelperLines());
+        } else if (e.getSource() == container.getShowHelperLinesCheckBox()) {
+            setShowHelperLines(container.getShowHelperLinesCheckBox().isSelected());
+            repaint();
+        } else if (e.getSource() == container.getShowHelperPointsCheckBox()) {
+            setShowHelperPoints(container.getShowHelperPointsCheckBox().isSelected());
+            repaint();
+        } else if (e.getSource() == container.getShowCurveLinesCheckBox()) {
+            setShowCurveLines(container.getShowCurveLinesCheckBox().isSelected());
+            repaint();
+        } else if (e.getSource() == container.getShowCurvePointsCheckBox()) {
+            setShowCurvePoints(container.getShowCurvePointsCheckBox().isSelected());
+            repaint();
+        } else if (e.getSource() == container.getShowControlPointLinesCheckBox()) {
+            setShowControlPointLines(container.getShowControlPointLinesCheckBox().isSelected());
+            repaint();
+        } else if (e.getSource() == container.getShowControlPointsCheckBox()) {
+            setShowControlPoints(container.getShowControlPointsCheckBox().isSelected());
             repaint();
         }
     }
@@ -201,7 +228,28 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         this.showHelperLines = showHelperLines;
     }
 
-    public boolean isShowHelperLines() {
-        return showHelperLines;
+    public void setShowHelperPoints(boolean showHelperPoints) {
+        this.showHelperPoints = showHelperPoints;
+    }
+
+    public void setShowCurveLines(boolean showCurveLines) {
+        this.showCurveLines = showCurveLines;
+    }
+
+    public void setShowCurvePoints(boolean showCurvePoints) {
+        this.showCurvePoints = showCurvePoints;
+    }
+
+    public void setShowControlPointLines(boolean showControlPointLines) {
+        this.showControlPointLines = showControlPointLines;
+    }
+
+    public void setShowControlPoints(boolean showControlPoints) {
+        this.showControlPoints = showControlPoints;
+    }
+
+    private Color getOtherColor() {
+        if (currentColor.equals(colors.get(0))) return colors.get(1);
+        return colors.get(0);
     }
 }

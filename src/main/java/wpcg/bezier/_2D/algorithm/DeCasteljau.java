@@ -80,6 +80,10 @@ public class DeCasteljau {
         return curvePoints;
     }
 
+    public List<Vector2f> getCurvePointList() {
+        return new ArrayList<>(curvePoints.values());
+    }
+
     public HashMap<Float, List<Vector2f>> getIntermediateSteps() {
         return intermediateSteps;
     }
