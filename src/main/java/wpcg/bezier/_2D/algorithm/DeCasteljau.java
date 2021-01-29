@@ -10,6 +10,7 @@ public class DeCasteljau {
     private final HashMap<Float, Vector2f> curvePoints = new LinkedHashMap<>();
     private final HashMap<Float, List<Vector2f>> intermediateSteps = new LinkedHashMap<>();
 
+
     private double increment;
 
 

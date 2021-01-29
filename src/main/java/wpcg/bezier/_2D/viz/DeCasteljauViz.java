@@ -23,6 +23,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private double increment = .01;
     private CG2D container;
     private Graphics2D g2D;
+    private boolean showHelperLines = true;
 
 
 
@@ -65,30 +66,33 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
             }
 
 
-            System.out.println("cps: " + controlPoints.size());
-            System.out.println(Arrays.toString(intermediateSteps.values().toArray()));
-            for (List<Vector2f> vList : intermediateSteps.values()) {
-                int currentSkippingIndex = controlPoints.size() - 2;
-                int offsetToNextSkippingIndex = currentSkippingIndex;
-                for (int i = 0; i < vList.size() - 1; i++) {
-                    drawPoint(g, vList.get(i), Color.BLUE);
-                }
-
-                for (int i = 0; i < vList.size() - 1; i++) {
-
-                    // skip line drawing between "layers"
-                    if (i == currentSkippingIndex) {
-                        currentSkippingIndex += offsetToNextSkippingIndex;
-                        // offset decreases each "layer" by one
-                        offsetToNextSkippingIndex -= 1;
-                        continue;
+                for (List<Vector2f> vList : intermediateSteps.values()) {
+                    int currentSkippingIndex = controlPoints.size() - 2;
+                    int offsetToNextSkippingIndex = currentSkippingIndex;
+                    for (int i = 0; i < vList.size() - 1; i++) {
+                        drawPoint(g, vList.get(i), Color.BLUE);
                     }
 
-                    drawLine(g, vList.get(i), vList.get(i + 1), Color.DARK_GRAY);
-                    System.out.println("Start: " + vList.get(i));
-                    System.out.println("End: " + vList.get(i + 1));
-                }
-                drawPoint(g, vList.get(vList.size() - 1), Color.cyan);
+                    if (showHelperLines) {
+                        for (int i = 0; i < vList.size() - 1; i++) {
+
+                            // skip line drawing between "layers"
+                            if (i == currentSkippingIndex) {
+                                currentSkippingIndex += offsetToNextSkippingIndex;
+                                // offset decreases each "layer" by one
+                                offsetToNextSkippingIndex -= 1;
+                                continue;
+                            }
+
+                            drawLine(g, vList.get(i), vList.get(i + 1), Color.DARK_GRAY);
+                        }
+                    }
+                    //drawPoint(g, vList.get(vList.size() - 1), Color.cyan);
+
+            }
+
+            for (Vector2f curvePoint : casteljauMath.getCurvePoints().values()) {
+                drawPoint(g, curvePoint, Color.CYAN);
             }
 
 
@@ -182,10 +186,22 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
             System.out.println("lol");
             container.getIncrementLabel().setText("t: " + t);
             repaint();
+        } else if (e.getSource() == container.getShowHelperLinesBox()) {
+            setShowHelperLines(container.getShowHelperLinesBox().isSelected());
+            System.out.println(isShowHelperLines());
+            repaint();
         }
     }
 
     public void setIncrement(double increment) {
         this.increment = increment;
+    }
+
+    public void setShowHelperLines(boolean showHelperLines) {
+        this.showHelperLines = showHelperLines;
+    }
+
+    public boolean isShowHelperLines() {
+        return showHelperLines;
     }
 }

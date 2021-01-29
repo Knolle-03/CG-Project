@@ -23,13 +23,14 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
     int WIDTH = 1000;
     int HEIGHT = 600;
 
-    Color OPTIONS_MENU_COLOR = Color.darkGray;
+    Color OPTIONS_MENU_COLOR = Color.DARK_GRAY;
+    Color OPTIONS_MENU_TEXT_COLOR = Color.CYAN;
 
     JPanel optionsMenu;
     JSlider incrementSlider;
     JLabel incrementLabel;
     JToggleButton showIncrementsToggleButton;
-    JButton showHelperLinesButton;
+    JCheckBox showHelperLinesBox;
     JButton resetButton;
 
     DeCasteljauViz canvas;
@@ -67,10 +68,19 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
 
         // setup increment label
         incrementLabel = new JLabel();
-        incrementLabel.addPropertyChangeListener(this);
-        incrementLabel.setForeground(Color.CYAN);
+        //incrementLabel.addPropertyChangeListener(this);
+        incrementLabel.setForeground(OPTIONS_MENU_TEXT_COLOR);
         optionsMenu.add(incrementLabel);
         incrementLabel.setText("t: " + incrementSlider.getValue() / 100.0);
+
+        // setup helper lines checkbox
+        showHelperLinesBox = new JCheckBox("Show helper lines", true);
+        showHelperLinesBox.addChangeListener(canvas);
+        showHelperLinesBox.setForeground(OPTIONS_MENU_TEXT_COLOR);
+        showHelperLinesBox.setBackground(OPTIONS_MENU_COLOR);
+        optionsMenu.add(showHelperLinesBox);
+
+
 
 
 
@@ -118,15 +128,15 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
         return showIncrementsToggleButton;
     }
 
-    public JButton getShowHelperLinesButton() {
-        return showHelperLinesButton;
-    }
-
     public JButton getResetButton() {
         return resetButton;
     }
 
     public DeCasteljauViz getCanvas() {
         return canvas;
+    }
+
+    public JCheckBox getShowHelperLinesBox() {
+        return showHelperLinesBox;
     }
 }
