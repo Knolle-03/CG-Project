@@ -57,7 +57,7 @@ public class CG2D extends JFrame implements ChangeListener, PropertyChangeListen
         incrementSlider = new JSlider(10, 900);
         optionsMenu.add(incrementSlider);
         incrementSlider.addChangeListener(canvas);
-        //incrementSlider.setPaintTicks(true);
+        incrementSlider.setPaintTicks(true);
         //incrementSlider.setPaintLabels(true);
         incrementSlider.setMajorTickSpacing(10);
         incrementSlider.setBounds(0,0, WIDTH, HEIGHT);
