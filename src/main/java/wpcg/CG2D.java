@@ -107,22 +107,22 @@ public class CG2D extends JFrame {
         optionsMenu.add(resetButton);
     }
 
+    // setup options menu
     private void setupOptionsMenu() {
-        // setup options menu
         optionsMenu = new JPanel();
         optionsMenu.setBackground(OPTIONS_MENU_COLOR);
         optionsMenu.setPreferredSize(new Dimension(300, HEIGHT));
         optionsMenu.setLayout(new FlowLayout());
     }
 
+    // setup canvas
     private void setupDeCasteljauViz() {
-        // setup canvas
         canvas = new DeCasteljauViz(this);
         canvas.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     }
 
+    // setup CG2D
     private void setupCG2D() {
-        // setup CG2D
         this.setVisible(true);
         this.setLayout(new BorderLayout(5, 5));
         this.setSize(WIDTH, HEIGHT);
