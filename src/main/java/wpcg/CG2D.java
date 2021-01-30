@@ -8,53 +8,58 @@ package wpcg;
 import wpcg.bezier._2D.viz.DeCasteljauViz;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
  * Lecture support application for 2D scenes
  */
-public class CG2D extends JFrame implements ChangeListener {
+public class CG2D extends JFrame {
+
+    // window dimensions
     int WIDTH = 1000;
     int HEIGHT = 600;
 
+    // options menu colors
     Color OPTIONS_MENU_COLOR = Color.DARK_GRAY;
     Color OPTIONS_MENU_TEXT_COLOR = Color.CYAN;
 
+    // container for options
     JPanel optionsMenu;
+    // slider for t
     JSlider incrementSlider;
+    // label for t
     JLabel incrementLabel;
-    JToggleButton showIncrementsToggleButton;
+    // control point options
     JCheckBox showControlPointLinesCheckBox;
     JCheckBox showControlPointsCheckBox;
+    // helper options
     JCheckBox showHelperLinesCheckBox;
     JCheckBox showHelperPointsCheckBox;
+    // curve options
     JCheckBox showCurveLinesCheckBox;
     JCheckBox showCurvePointsCheckBox;
+    // reset option
     JButton resetButton;
-
+    // canvas the bezier curve is drawn on
     DeCasteljauViz canvas;
 
+
     public CG2D() {
+        setupCG2D();
+        setupDeCasteljauViz();
+        setupOptionsMenu();
+        setupOptionsMenuItems();
+        this.add(optionsMenu, BorderLayout.EAST);
+        this.add(canvas, BorderLayout.CENTER);
+    }
 
-        // setup CG2D
-        this.setVisible(true);
-        this.setLayout(new BorderLayout(5, 5));
-        this.setSize(WIDTH, HEIGHT);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public static void main(String[] args) {
+        EventQueue.invokeLater(CG2D::new);
+    }
 
-        // setup canvas
-        canvas = new DeCasteljauViz(this);
-        canvas.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+    // ++++++++++++++++++++++ window setup methods ++++++++++++++++++++++
 
-
-        // setup options menu
-        optionsMenu = new JPanel();
-        optionsMenu.setBackground(OPTIONS_MENU_COLOR);
-        optionsMenu.setPreferredSize(new Dimension(300, HEIGHT));
-        optionsMenu.setLayout(new FlowLayout());
-
+    private void setupOptionsMenuItems() {
         // setup increment slider
         incrementSlider = new JSlider(5, 990);
         optionsMenu.add(incrementSlider);
@@ -67,7 +72,6 @@ public class CG2D extends JFrame implements ChangeListener {
 
         // setup increment label
         incrementLabel = new JLabel();
-        //incrementLabel.addPropertyChangeListener(this);
         incrementLabel.setForeground(OPTIONS_MENU_TEXT_COLOR);
         optionsMenu.add(incrementLabel);
         incrementLabel.setText("t: " + incrementSlider.getValue() / 100.0);
@@ -101,31 +105,31 @@ public class CG2D extends JFrame implements ChangeListener {
         resetButton.setFocusable(false);
         resetButton.addActionListener(canvas);
         optionsMenu.add(resetButton);
-
-
-
-
-
-        this.add(optionsMenu, BorderLayout.EAST);
-        this.add(canvas, BorderLayout.CENTER);
-
-
-
-
-
     }
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(CG2D::new);
+    private void setupOptionsMenu() {
+        // setup options menu
+        optionsMenu = new JPanel();
+        optionsMenu.setBackground(OPTIONS_MENU_COLOR);
+        optionsMenu.setPreferredSize(new Dimension(300, HEIGHT));
+        optionsMenu.setLayout(new FlowLayout());
     }
 
-    @Override
-    public void stateChanged(ChangeEvent e) {
-
-
-
+    private void setupDeCasteljauViz() {
+        // setup canvas
+        canvas = new DeCasteljauViz(this);
+        canvas.setPreferredSize(new Dimension(WIDTH, HEIGHT));
     }
 
+    private void setupCG2D() {
+        // setup CG2D
+        this.setVisible(true);
+        this.setLayout(new BorderLayout(5, 5));
+        this.setSize(WIDTH, HEIGHT);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    // generic check box setup method
     private void configureCheckBox(JCheckBox checkBox) {
         checkBox.addChangeListener(canvas);
         checkBox.setForeground(OPTIONS_MENU_TEXT_COLOR);
@@ -133,10 +137,7 @@ public class CG2D extends JFrame implements ChangeListener {
         optionsMenu.add(checkBox);
     }
 
-
-    public JPanel getOptionsMenu() {
-        return optionsMenu;
-    }
+    // ++++++++++++++++++++++ GETTERS ++++++++++++++++++++++
 
     public JSlider getIncrementSlider() {
         return incrementSlider;
@@ -146,16 +147,8 @@ public class CG2D extends JFrame implements ChangeListener {
         return incrementLabel;
     }
 
-    public JToggleButton getShowIncrementsToggleButton() {
-        return showIncrementsToggleButton;
-    }
-
     public JButton getResetButton() {
         return resetButton;
-    }
-
-    public DeCasteljauViz getCanvas() {
-        return canvas;
     }
 
     public JCheckBox getShowControlPointLinesCheckBox() {
