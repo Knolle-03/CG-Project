@@ -59,8 +59,6 @@ public class CG2D extends JFrame implements ChangeListener {
         incrementSlider = new JSlider(5, 990);
         optionsMenu.add(incrementSlider);
         incrementSlider.addChangeListener(canvas);
-        incrementSlider.setPaintTicks(true);
-        //incrementSlider.setPaintLabels(true);
         incrementSlider.setMajorTickSpacing(10);
         incrementSlider.setBounds(0,0, WIDTH, HEIGHT);
         incrementSlider.setBackground(OPTIONS_MENU_COLOR);
@@ -97,6 +95,12 @@ public class CG2D extends JFrame implements ChangeListener {
         // setup curve points check box
         showCurvePointsCheckBox = new JCheckBox("Show curve points", true);
         configureCheckBox(showCurvePointsCheckBox);
+
+        // setup reset button
+        resetButton = new JButton("reset canvas");
+        resetButton.setFocusable(false);
+        resetButton.addActionListener(canvas);
+        optionsMenu.add(resetButton);
 
 
 

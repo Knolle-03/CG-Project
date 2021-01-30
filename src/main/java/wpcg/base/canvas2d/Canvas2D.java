@@ -15,7 +15,7 @@ import java.awt.event.MouseMotionListener;
 
 public abstract class Canvas2D extends JPanel {
 
-  private static final int POINT_SIZE = 6;
+  private static final int POINT_SIZE = 10;
 
   /**
    * Lower left corner in world coordinates.
@@ -29,8 +29,6 @@ public abstract class Canvas2D extends JPanel {
 
   public Graphics2D g2D;
 
-  // needed for lombok
-  private Canvas2D() {}
 
   public Canvas2D(int width, int height, Vector2f ll, Vector2f ur) {
     setSize(width, height);
@@ -163,5 +161,10 @@ public abstract class Canvas2D extends JPanel {
     Vector2f pUnit = new Vector2f(pPixel.x, getHeight() - pPixel.y);
     pUnit = pUnit.subtract(offset).mult(1.0f / scale);
     return pUnit;
+  }
+
+
+  public static int getPointSize() {
+    return POINT_SIZE;
   }
 }

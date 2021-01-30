@@ -8,6 +8,7 @@ public class DeCasteljau {
 
     private final ArrayList<Vector2f> controlPoints;
     private final HashMap<Float, Vector2f> curvePoints = new LinkedHashMap<>();
+    // maps a given t to
     private final HashMap<Float, List<Vector2f>> intermediateSteps = new LinkedHashMap<>();
 
 
@@ -30,10 +31,12 @@ public class DeCasteljau {
     }
 
     public void reCalcCurvePoints() {
-        if (controlPoints.isEmpty()) throw new IllegalStateException("calcCurvePoint() must have been called at least once to call this method.");
-
-        curvePoints.clear();
         intermediateSteps.clear();
+        curvePoints.clear();
+
+        if (controlPoints.isEmpty()) {
+            controlPoints.add(new Vector2f(0, 0));
+        }
 
         for (float t = 0.0f; t <= 1.0005; t += increment) {
             // calculate the curve point of t and add it to the hash map

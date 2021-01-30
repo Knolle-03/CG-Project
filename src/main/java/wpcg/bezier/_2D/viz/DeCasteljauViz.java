@@ -5,23 +5,22 @@ import wpcg.CG2D;
 import wpcg.base.canvas2d.Canvas2D;
 import wpcg.bezier._2D.algorithm.DeCasteljau;
 
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
 
-public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeListener {
+public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeListener, MouseMotionListener, ActionListener {
     private static final int BOUNDS = 300;
     private HashMap<Float, List<Vector2f>> intermediateSteps;
     private final ArrayList<Vector2f> controlPoints = new ArrayList<>();
     private final DeCasteljau casteljauMath;
     private double increment = .01;
     private final CG2D container;
-    private Graphics2D g2D;
     private final List<Color> colors = new ArrayList<>();
     private Color currentColor;
 
@@ -31,6 +30,8 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private boolean showHelperPoints = true;
     private boolean showCurveLines = true;
     private boolean showCurvePoints = true;
+
+    private Vector2f selectedControlPoint;
 
 
     public DeCasteljauViz(CG2D container) {
@@ -42,6 +43,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         //colors.add(new Color(0, 255,0 ));
         currentColor = colors.get(0);
         addMouseListener(this);
+        addMouseMotionListener(this);
 
         controlPoints.add(new Vector2f(-250,0));
         controlPoints.add(new Vector2f(-125,200));
@@ -58,7 +60,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
     @Override
     public void onRepaint(Graphics2D g) {
-        if (g2D == null) g2D = g;
+        // TODO:: Set once when initialized?
         g.setBackground(Color.lightGray);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setStroke(new BasicStroke(2));
@@ -157,21 +159,38 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == 1) {
             controlPoints.add(translatePixelCoordsToVector(e));
-            casteljauMath.reCalcCurvePoints();
-            intermediateSteps = casteljauMath.getIntermediateSteps();
+            reCalcDeCasteljau();
             repaint();
+        } else if (e.getButton() == 3) {
+            Vector2f cp = controlPointWithinDelta(e);
+            if (cp != null) {
+                controlPoints.remove(cp);
+                System.out.println("Removed cp:" + cp);
+                reCalcDeCasteljau();
+                repaint();
+            } else {
+                System.out.println("No cp within delta");
+            }
         }
-
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if (e.getButton() == 1) {
+            System.out.println("in Mouse Pressed");
+            Vector2f cp = controlPointWithinDelta(e);
+            if (cp != null) {
+                selectedControlPoint = cp;
+            }
+        }
+
 
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        System.out.println("Released");
+        selectedControlPoint = null;
     }
 
     @Override
@@ -184,16 +203,44 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
     }
 
-    private Vector2f translatePixelCoordsToVector(MouseEvent e) {
-        return unit2World(pixel2Unit(new Vector2f(e.getX(), e.getY())));
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        Vector2f currentVec = translatePixelCoordsToVector(e);
+        if (selectedControlPoint != null) {
+            selectedControlPoint.x = currentVec.getX();
+            selectedControlPoint.y = currentVec.getY();
+            reCalcDeCasteljau();
+            repaint();
+        }
+
+
+
     }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == container.getResetButton()) {
+            int response = JOptionPane.showConfirmDialog(container, "Delete current curve?", "Reset", JOptionPane.YES_NO_OPTION);
+            if (response == 0) {
+                controlPoints.clear();
+                reCalcDeCasteljau();
+                repaint();
+            }
+        }
+    }
+
+
 
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == container.getIncrementSlider()) {
 
-            float t = Math.round(container.getIncrementSlider().getValue() / 10.0);
-            t /= 100;
+            float t = Math.round(container.getIncrementSlider().getValue() / 10.0) / 100f;
             casteljauMath.setIncrement(t);
             casteljauMath.reCalcCurvePoints();
             intermediateSteps = casteljauMath.getIntermediateSteps();
@@ -218,10 +265,6 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
             setShowControlPoints(container.getShowControlPointsCheckBox().isSelected());
             repaint();
         }
-    }
-
-    public void setIncrement(double increment) {
-        this.increment = increment;
     }
 
     public void setShowHelperLines(boolean showHelperLines) {
@@ -252,4 +295,28 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         if (currentColor.equals(colors.get(0))) return colors.get(1);
         return colors.get(0);
     }
+
+    private Vector2f translatePixelCoordsToVector(MouseEvent e) {
+        return unit2World(pixel2Unit(new Vector2f(e.getX(), e.getY())));
+    }
+
+    private Vector2f controlPointWithinDelta(MouseEvent e) {
+        Vector2f coords = translatePixelCoordsToVector(e);
+        for (Vector2f cp : controlPoints) {
+            // if cp lies within a delta of the coords vector
+            if ((cp.x < coords.x + getPointSize() && cp.x > coords.x - getPointSize()) &&
+                    (cp.y < coords.y + getPointSize() && cp.y > coords.y - getPointSize())) {
+                return cp;
+            }
+        }
+        return null;
+    }
+
+    private void reCalcDeCasteljau() {
+        casteljauMath.reCalcCurvePoints();
+        intermediateSteps = casteljauMath.getIntermediateSteps();
+    }
+
+
+
 }
