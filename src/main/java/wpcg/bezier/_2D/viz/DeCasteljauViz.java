@@ -1,8 +1,7 @@
 package wpcg.bezier._2D.viz;
 
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import wpcg.CG2D;
+import wpcg.MainFrame;
 import wpcg.base.canvas2d.Canvas2D;
 import wpcg.bezier._2D.algorithm.DeCasteljau;
 
@@ -21,7 +20,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private final ArrayList<Vector2f> controlPoints = new ArrayList<>();
     private final DeCasteljau casteljauMath;
     private double increment = .01;
-    private final CG2D container;
+    private final MainFrame container;
     private final List<Color> colors = new ArrayList<>();
     private Color currentColor;
 
@@ -31,12 +30,11 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private boolean showHelperPoints = true;
     private boolean showCurveLines = true;
     private boolean showCurvePoints = true;
-    private boolean showConvexHull = true;
 
     private Vector2f selectedControlPoint;
 
 
-    public DeCasteljauViz(CG2D container) {
+    public DeCasteljauViz(MainFrame container) {
         super(600, 600, new Vector2f(-BOUNDS, -BOUNDS), new Vector2f(BOUNDS, BOUNDS));
         this.container = container;
 
@@ -75,10 +73,10 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
             if (showControlPoints) {
                 // first cp
-                drawControlPoint(g, controlPoints.get(0), Color.BLACK);
+                drawPoint(g, controlPoints.get(0), Color.RED);
                 // draw remaining cps and lines between them
                 for (int i = 1; i < controlPoints.size(); i++) {
-                    drawControlPoint(g, controlPoints.get(i), Color.BLACK);
+                    drawPoint(g, controlPoints.get(i), Color.RED);
                 }
             }
 
@@ -314,41 +312,10 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         return null;
     }
 
-    private List<Vector2f> calcConvexHull() {
-        List<Vector2f> convexHull = new ArrayList<>();
-        Vector2f leftMost = controlPoints.get(0);
-        Vector2f rightMost = controlPoints.get(0);
-        for (Vector2f cp : controlPoints) {
-            if (cp.x < leftMost.x) leftMost = cp;
-            if (cp.x > rightMost.x) rightMost = cp;
-        }
-        List<Vector2f> above = new ArrayList<>();
-        List<Vector2f> below = new ArrayList<>();
-        Vector2f v1 = new Vector2f(rightMost.x - leftMost.x, rightMost.y - leftMost.y);
-        Vector2f v2;
-        for (Vector2f cp : controlPoints) {
-            v2 = new Vector2f(rightMost.x - cp.x, rightMost.y - cp.y);
-            float xp = v1.x * v2.y - v1.y * v2.x;
-            if (xp > 0) above.add(cp);
-            else below.add(cp);
-
-            findHull(above, leftMost, rightMost);
-            findHull(below, rightMost, leftMost);
-        }
-
-        return convexHull;
-    }
-
-    private List<Vector2f> findHull(List<Vector2f> s, Vector2f p, Vector2f q) {
-
-    }
-
     private void reCalcDeCasteljau() {
         casteljauMath.reCalcCurvePoints();
         intermediateSteps = casteljauMath.getIntermediateSteps();
     }
-
-
 
 
 

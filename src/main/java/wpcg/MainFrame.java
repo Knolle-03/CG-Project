@@ -1,23 +1,17 @@
-/**
- * Diese Datei ist Teil der Vorgabe zur Lehrveranstaltung Einführung in die Computergrafik der Hochschule
- * für Angewandte Wissenschaften Hamburg von Prof. Philipp Jenke (Informatik)
- */
+
 
 package wpcg;
 
 import wpcg.bezier._2D.viz.DeCasteljauViz;
-
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Lecture support application for 2D scenes
- */
-public class CG2D extends JFrame {
+
+public class MainFrame extends JFrame {
 
     // window dimensions
-    int WIDTH = 1000;
-    int HEIGHT = 600;
+    int WIDTH = 1600;
+    int HEIGHT = 1000;
 
     // options menu colors
     Color OPTIONS_MENU_COLOR = Color.DARK_GRAY;
@@ -44,7 +38,7 @@ public class CG2D extends JFrame {
     DeCasteljauViz canvas;
 
 
-    public CG2D() {
+    public MainFrame() {
         setupCG2D();
         setupDeCasteljauViz();
         setupOptionsMenu();
@@ -54,7 +48,7 @@ public class CG2D extends JFrame {
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(CG2D::new);
+        EventQueue.invokeLater(MainFrame::new);
     }
 
     // ++++++++++++++++++++++ window setup methods ++++++++++++++++++++++
