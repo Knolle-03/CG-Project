@@ -1,7 +1,7 @@
 package wpcg.bezier._2D.viz;
 
 import com.jme3.math.Vector2f;
-import wpcg.CG2D;
+import wpcg.MainFrame;
 import wpcg.base.canvas2d.Canvas2D;
 import wpcg.bezier._2D.algorithm.DeCasteljau;
 
@@ -20,7 +20,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private final ArrayList<Vector2f> controlPoints = new ArrayList<>();
     private final DeCasteljau casteljauMath;
     private double increment = .01;
-    private final CG2D container;
+    private final MainFrame container;
     private final List<Color> colors = new ArrayList<>();
     private Color currentColor;
 
@@ -34,7 +34,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private Vector2f selectedControlPoint;
 
 
-    public DeCasteljauViz(CG2D container) {
+    public DeCasteljauViz(MainFrame container) {
         super(600, 600, new Vector2f(-BOUNDS, -BOUNDS), new Vector2f(BOUNDS, BOUNDS));
         this.container = container;
 
