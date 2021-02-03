@@ -32,6 +32,10 @@ public class MainFrame extends JFrame {
     // curve options
     JCheckBox showCurveLinesCheckBox;
     JCheckBox showCurvePointsCheckBox;
+    // convex hull
+    JCheckBox showConvexHullControlPointsCheckBox;
+    // convex hull
+    JCheckBox showConvexHullCurvePointsCheckBox;
     // reset option
     JButton resetButton;
     // canvas the bezier curve is drawn on
@@ -93,6 +97,14 @@ public class MainFrame extends JFrame {
         // setup curve points check box
         showCurvePointsCheckBox = new JCheckBox("Show curve points", true);
         configureCheckBox(showCurvePointsCheckBox);
+
+        // setup convex hull for control points check box
+        showConvexHullControlPointsCheckBox = new JCheckBox("Show convex hull for control points (buggy)", true);
+        configureCheckBox(showConvexHullControlPointsCheckBox);
+
+        // setup convex hull for curve points check box
+        showConvexHullCurvePointsCheckBox = new JCheckBox("Show convex hull for curve points (buggy)", true);
+        configureCheckBox(showConvexHullCurvePointsCheckBox);
 
         // setup reset button
         resetButton = new JButton("reset canvas");
@@ -167,5 +179,13 @@ public class MainFrame extends JFrame {
 
     public JCheckBox getShowCurvePointsCheckBox() {
         return showCurvePointsCheckBox;
+    }
+
+    public JCheckBox getShowConvexHullControlPointsCheckBox() {
+        return showConvexHullControlPointsCheckBox;
+    }
+
+    public JCheckBox getShowConvexHullCurvePointsCheckBox() {
+        return showConvexHullCurvePointsCheckBox;
     }
 }
