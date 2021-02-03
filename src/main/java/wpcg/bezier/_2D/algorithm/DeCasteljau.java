@@ -8,7 +8,7 @@ public class DeCasteljau {
 
     private final ArrayList<Vector2f> controlPoints;
     private final HashMap<Float, Vector2f> curvePoints = new LinkedHashMap<>();
-    // maps a given t to
+    // maps a given t to a List of helper Points on the control line segments
     private final HashMap<Float, List<Vector2f>> intermediateSteps = new LinkedHashMap<>();
 
 
@@ -24,7 +24,7 @@ public class DeCasteljau {
 
     public void calcCurvePoints() {
         // for each t <= 1.0
-        for (float t = 0.0f; t <= 1.0005; t += increment) {
+        for (float t = 0; t <= 1; t += increment) {
             // calculate the curve point of t and add it to the hash map
             curvePoints.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
         }

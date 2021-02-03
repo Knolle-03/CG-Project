@@ -107,6 +107,33 @@ public abstract class Canvas2D extends JPanel {
   }
 
   /**
+   * Draw a point at p.
+   */
+  protected void drawControlPoint(Graphics gc, Vector2f p, Color color) {
+    Vector2f pixelPoint = world2Pixel(p);
+    int offset = POINT_SIZE / 2;
+
+    int x = (int) pixelPoint.x;
+    int y = (int) pixelPoint.y;
+    //left
+    gc.drawLine(x - offset  * 4 , y , x - offset, y );
+    //right
+    gc.drawLine(x + offset  * 4 , y , x + offset, y );
+    // bottom
+    gc.drawLine(x, y + offset * 4 , x, y + offset);
+    //top
+    gc.drawLine(x, y - offset * 4 , x, y - offset);
+
+    gc.drawArc(x - POINT_SIZE, y - POINT_SIZE, POINT_SIZE * 2, POINT_SIZE * 2, 0, 360);
+
+
+
+    //gc.setColor(color);
+    //gc.fillArc(x, y, POINT_SIZE, POINT_SIZE, 0, 360);
+    //gc.setColor(Color.BLACK);
+  }
+
+  /**
    * World -> pixel coordinates.
    */
   protected Vector2f world2Pixel(Vector2f pWorld) {
