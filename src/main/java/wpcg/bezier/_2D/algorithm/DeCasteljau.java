@@ -12,6 +12,9 @@ public class DeCasteljau {
     private final HashMap<Float, List<Vector2f>> intermediateSteps = new LinkedHashMap<>();
 
 
+
+    private final HashMap<Float, Vector2f> curve = new LinkedHashMap<>();
+
     private double increment;
 
 
@@ -20,6 +23,12 @@ public class DeCasteljau {
 
         this.controlPoints = controlPoints;
         this.increment = increment;
+
+        for (float t = 0; t <= 1; t += 0.01) {
+            // calculate the curve point of t and add it to the hash map
+            curve.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
+        }
+
     }
 
     public void calcCurvePoints() {
@@ -33,6 +42,7 @@ public class DeCasteljau {
     public void reCalcCurvePoints() {
         intermediateSteps.clear();
         curvePoints.clear();
+        curve.clear();
 
         if (controlPoints.isEmpty()) {
             controlPoints.add(new Vector2f(0, 0));
@@ -42,6 +52,11 @@ public class DeCasteljau {
             // calculate the curve point of t and add it to the hash map
             curvePoints.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
         }
+
+        for (float t = 0.0f; t <= 1.0005; t += 0.01) {
+            // calculate the curve point of t and add it to the hash map
+            curve.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
+        }
     }
 
     private Vector2f calcCurvePoint(float t) {
@@ -50,8 +65,6 @@ public class DeCasteljau {
 
         //last index of controlPoints
         int n = controlPoints.size() - 1;
-
-
 
         // add control points to aux list
         for (int i = 0; i <= n; i++) {
@@ -93,5 +106,9 @@ public class DeCasteljau {
 
     public void setIncrement(double newIncrement) {
         increment = newIncrement;
+    }
+
+    public HashMap<Float, Vector2f> getCurve() {
+        return curve;
     }
 }

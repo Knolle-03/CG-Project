@@ -31,8 +31,11 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private boolean showHelperPoints = true;
     private boolean showCurveLines = true;
     private boolean showCurvePoints = true;
+
+
+
+    private boolean showCurrentCurvePoint = true;
     private boolean showConvexHullControlPoints = true;
-    private boolean showConvexHullCurvePoints = true;
 
     private Vector2f selectedControlPoint;
 
@@ -98,17 +101,17 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
             }
 
-            if (showConvexHullCurvePoints) {
-                List<Vector2f> convexHull = calcConvexHull(casteljauMath.getCurvePointList());
-
-                if (convexHull.size() > 2) {
-                    for (int i = 0; i < convexHull.size() - 1; i++) {
-                        drawLine(g, convexHull.get(i), convexHull.get(i + 1), Color.GREEN);
-                    }
-                    drawLine(g, convexHull.get(convexHull.size() - 1), convexHull.get(0), Color.GREEN);
-                }
-
-            }
+//            if (showConvexHullCurvePoints) {
+//                List<Vector2f> convexHull = calcConvexHull(casteljauMath.getCurvePointList());
+//
+//                if (convexHull.size() > 2) {
+//                    for (int i = 0; i < convexHull.size() - 1; i++) {
+//                        drawLine(g, convexHull.get(i), convexHull.get(i + 1), Color.GREEN);
+//                    }
+//                    drawLine(g, convexHull.get(convexHull.size() - 1), convexHull.get(0), Color.GREEN);
+//                }
+//
+//            }
 
             if (showControlPointLines) {
                 for (int i = 1; i < controlPoints.size(); i++) {
@@ -132,10 +135,8 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
                 if (showHelperLines) {
                     // draw helper lines
                     for (int i = 0; i < vList.size() - 1; i++) {
-
                         // skip line drawing between "layers"
                         if (i == currentSkippingIndex) {
-
                             currentColor = getOtherColor();
 
                             currentSkippingIndex += offsetToNextSkippingIndex;
@@ -145,28 +146,53 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
                         }
 
                         drawLine(g, vList.get(i), vList.get(i + 1), currentColor);
+
+
                     }
+                }
+                // stop after first iteration
+                if (showCurrentCurvePoint) break;
+            }
+
+            if (showCurvePoints) {
+                // draw curve points
+                for (Vector2f curvePoint : casteljauMath.getCurvePoints().values()) {
+                    drawPoint(g, curvePoint, Color.CYAN);
                 }
 
             }
-                if (showCurvePoints) {
-                    // draw curve points
-                    for (Vector2f curvePoint : casteljauMath.getCurvePoints().values()) {
-                        drawPoint(g, curvePoint, Color.CYAN);
-                    }
 
+            if (showCurrentCurvePoint) {
+                // draw curve point for current value of t
+                drawPoint(g, casteljauMath.getCurvePointList().get(1), Color.CYAN);
+                System.out.println(casteljauMath.getCurvePointList());
+
+                Iterator<Map.Entry<Float, Vector2f>> iterator = casteljauMath.getCurve().entrySet().iterator();
+
+                Map.Entry<Float, Vector2f> prev = iterator.next();
+                Map.Entry<Float, Vector2f> current = iterator.next();
+
+                float current_T = current.getKey();
+                while (current_T <= getCurrent_t() && iterator.hasNext()) {
+                    System.out.println(getCurrent_t());
+                    drawLine(g, prev.getValue(), current.getValue(), Color.YELLOW);
+                    prev = current;
+                    current = iterator.next();
+                    current_T = current.getKey();
                 }
 
-                if (showCurveLines) {
-                    List<Vector2f> curvePoints = casteljauMath.getCurvePointList();
+//                for (Map.Entry<Float, Vector2f> entry : casteljauMath.getCurve().entrySet()) {
+//                    if (entry.getKey() <= getCurrent_t())
+//                }
+            }
 
-                    for (int i = 0; i < curvePoints.size() - 1; i++) {
-                        drawLine(g, curvePoints.get(i), curvePoints.get(i + 1), Color.YELLOW);
-                    }
+            if (showCurveLines) {
+                List<Vector2f> curvePoints = casteljauMath.getCurvePointList();
+
+                for (int i = 0; i < curvePoints.size() - 1; i++) {
+                    drawLine(g, curvePoints.get(i), curvePoints.get(i + 1), Color.YELLOW);
                 }
-
-
-
+            }
         }
     }
 
@@ -270,12 +296,10 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     public void stateChanged(ChangeEvent e) {
 
         if (e.getSource() == container.getIncrementSlider()) {
-
-            float t = Math.round(container.getIncrementSlider().getValue() / 10.0) / 100f;
-            casteljauMath.setIncrement(t);
+            casteljauMath.setIncrement(getCurrent_t());
             casteljauMath.reCalcCurvePoints();
             intermediateSteps = casteljauMath.getIntermediateSteps();
-            container.getIncrementLabel().setText("t: " + t);
+            container.getIncrementLabel().setText("t: " + getCurrent_t());
             repaint();
         } else if (e.getSource() == container.getShowHelperLinesCheckBox()) {
             setShowHelperLines(container.getShowHelperLinesCheckBox().isSelected());
@@ -298,10 +322,14 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         } else if (e.getSource() == container.getShowConvexHullControlPointsCheckBox()) {
             setShowConvexHullControlPoints(container.getShowConvexHullControlPointsCheckBox().isSelected());
             repaint();
-        } else if (e.getSource() == container.getShowConvexHullCurvePointsCheckBox()) {
-            setShowConvexHullCurvePoints(container.getShowConvexHullCurvePointsCheckBox().isSelected());
+        } else if (e.getSource() == container.getShowCurrentCurvePointCheckBox()) {
+            setShowCurrentCurvePoint(container.getShowCurrentCurvePointCheckBox().isSelected());
             repaint();
         }
+    }
+
+    public float getCurrent_t() {
+        return Math.round(container.getIncrementSlider().getValue() / 10.0) / 100f;
     }
 
     public void setShowHelperLines(boolean showHelperLines) {
@@ -332,8 +360,12 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         this.showConvexHullControlPoints = showConvexHullControlPoints;
     }
 
-    public void setShowConvexHullCurvePoints(boolean showConvexHullCurvePoints) {
-        this.showConvexHullCurvePoints = showConvexHullCurvePoints;
+//    public void setShowConvexHullCurvePoints(boolean showConvexHullCurvePoints) {
+//        this.showConvexHullCurvePoints = showConvexHullCurvePoints;
+//    }
+
+    public void setShowCurrentCurvePoint(boolean showCurrentCurvePoint) {
+        this.showCurrentCurvePoint = showCurrentCurvePoint;
     }
 
     private Color getOtherColor() {

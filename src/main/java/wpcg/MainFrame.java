@@ -32,6 +32,8 @@ public class MainFrame extends JFrame {
     // curve options
     JCheckBox showCurveLinesCheckBox;
     JCheckBox showCurvePointsCheckBox;
+
+    JCheckBox showCurrentCurvePointCheckBox;
     // convex hull
     JCheckBox showConvexHullControlPointsCheckBox;
     // convex hull
@@ -98,13 +100,13 @@ public class MainFrame extends JFrame {
         showCurvePointsCheckBox = new JCheckBox("Show curve points", true);
         configureCheckBox(showCurvePointsCheckBox);
 
+        // setup curve point for current t check box
+        showCurrentCurvePointCheckBox = new JCheckBox("Show curve point for current t", true);
+        configureCheckBox(showCurrentCurvePointCheckBox);
+
         // setup convex hull for control points check box
         showConvexHullControlPointsCheckBox = new JCheckBox("Show convex hull for control points (buggy)", true);
         configureCheckBox(showConvexHullControlPointsCheckBox);
-
-        // setup convex hull for curve points check box
-        showConvexHullCurvePointsCheckBox = new JCheckBox("Show convex hull for curve points (buggy)", true);
-        configureCheckBox(showConvexHullCurvePointsCheckBox);
 
         // setup reset button
         resetButton = new JButton("reset canvas");
@@ -188,4 +190,7 @@ public class MainFrame extends JFrame {
     public JCheckBox getShowConvexHullCurvePointsCheckBox() {
         return showConvexHullCurvePointsCheckBox;
     }
+
+    public JCheckBox getShowCurrentCurvePointCheckBox() { return showCurrentCurvePointCheckBox; }
+
 }

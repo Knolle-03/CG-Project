@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = 'wpcg.CG2D'
+mainClassName = 'wpcg.MainFrame'
 
 repositories {
     mavenCentral()
@@ -18,8 +18,11 @@ dependencies {
     implementation "${jme3.g}:jme3-lwjgl:${jme3.v}"
     implementation 'org.json:json:20190722'
 
+
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.2')
 }
+
+
 
 test {
     useJUnitPlatform()
@@ -27,3 +30,15 @@ test {
         events "passed", "skipped", "failed"
     }
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": "wpcg/MainFrame"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+

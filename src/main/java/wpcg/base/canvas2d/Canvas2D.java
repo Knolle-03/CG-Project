@@ -106,21 +106,21 @@ public abstract class Canvas2D extends JPanel {
     gc.drawArc(x, y, POINT_SIZE, POINT_SIZE, 0, 360);
   }
 
-  protected void drawControlPoint(Graphics gc, Vector2f p, Color color) {
-    Vector2f pixelPoint = world2Pixel(p);
-    int x = (int) pixelPoint.x - POINT_SIZE / 2;
-    int y = (int) pixelPoint.y - POINT_SIZE / 2;
-    int x2 = (int) pixelPoint.x;
-    int y2 = (int) pixelPoint.y;
-    gc.setColor(color);
-
-    gc.drawLine(x - POINT_SIZE , y2 , x , y2); //left
-    gc.drawLine(x2 , y - POINT_SIZE  , x2 , y); // top
-    gc.drawLine(x + 2 * POINT_SIZE, y2, x + POINT_SIZE, y2); // right
-    gc.drawLine(x2 , y + 2 * POINT_SIZE, x2 , y + POINT_SIZE);
-    //gc.setColor(Color.BLACK);
-    gc.drawArc(x - POINT_SIZE / 2, y2 - POINT_SIZE, POINT_SIZE * 2, POINT_SIZE * 2, 0, 360);
-  }
+//  protected void drawControlPoint(Graphics gc, Vector2f p, Color color) {
+//    Vector2f pixelPoint = world2Pixel(p);
+//    int x = (int) pixelPoint.x - POINT_SIZE / 2;
+//    int y = (int) pixelPoint.y - POINT_SIZE / 2;
+//    int x2 = (int) pixelPoint.x;
+//    int y2 = (int) pixelPoint.y;
+//    gc.setColor(color);
+//
+//    gc.drawLine(x - POINT_SIZE , y2 , x , y2); //left
+//    gc.drawLine(x2 , y - POINT_SIZE  , x2 , y); // top
+//    gc.drawLine(x + 2 * POINT_SIZE, y2, x + POINT_SIZE, y2); // right
+//    gc.drawLine(x2 , y + 2 * POINT_SIZE, x2 , y + POINT_SIZE);
+//    //gc.setColor(Color.BLACK);
+//    gc.drawArc(x - POINT_SIZE / 2, y2 - POINT_SIZE, POINT_SIZE * 2, POINT_SIZE * 2, 0, 360);
+//  }
 
   /**
    * Draw a point at p.
