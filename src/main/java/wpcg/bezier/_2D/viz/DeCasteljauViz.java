@@ -39,7 +39,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
     public DeCasteljauViz(MainFrame container) {
 
-        super(600, 600, new Vector2f(-BOUNDS, -BOUNDS), new Vector2f(BOUNDS, BOUNDS));
+        super(1920, 1080, new Vector2f(-BOUNDS, -BOUNDS), new Vector2f(BOUNDS, BOUNDS));
         this.container = container;
         colors.add(new Color(255, 0, 0));
         colors.add(new Color(0, 0, 255));
@@ -59,6 +59,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         intermediateSteps = casteljauMath.getIntermediateSteps();
 
     }
+
 
     @Override
     public void onRepaint(Graphics2D g) {
@@ -81,6 +82,9 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
                     drawControlPoint(g, controlPoints.get(i), Color.BLACK);
                 }
             }
+
+
+
 
             if (showConvexHullControlPoints) {
                 List<Vector2f> convexHull = calcConvexHull(controlPoints);
