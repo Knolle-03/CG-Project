@@ -18,6 +18,6 @@ IntelliJ Import -> Gradle project
 
 ### 2D Main Application: 
 
-* `wpcg.MainFrame`
+* `wpcg.MainWindow`
 * with example content `wpcg.base.canvas2d.Canvas2D` 
             

@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class MainFrame extends JFrame {
+public class MainWindow extends JFrame {
 
     // window dimensions
     int WIDTH = 1600;
@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
     DeCasteljauViz canvas;
 
 
-    public MainFrame() {
+    public MainWindow() {
         setupCG2D();
         setupDeCasteljauViz();
         setupOptionsMenu();
@@ -52,7 +52,7 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(MainFrame::new);
+        EventQueue.invokeLater(MainWindow::new);
     }
 
     // ++++++++++++++++++++++ window setup methods ++++++++++++++++++++++
@@ -91,11 +91,11 @@ public class MainFrame extends JFrame {
         configureCheckBox(showHelperPointsCheckBox);
 
         // setup curve lines check box
-        showCurveLinesCheckBox = new JCheckBox("Show curve lines", true);
+        showCurveLinesCheckBox = new JCheckBox("Show curve lines", false);
         configureCheckBox(showCurveLinesCheckBox);
 
         // setup curve points check box
-        showCurvePointsCheckBox = new JCheckBox("Show curve points", true);
+        showCurvePointsCheckBox = new JCheckBox("Show curve points", false);
         configureCheckBox(showCurvePointsCheckBox);
 
         // setup curve point for current t check box
@@ -103,7 +103,7 @@ public class MainFrame extends JFrame {
         configureCheckBox(showCurrentCurvePointCheckBox);
 
         // setup convex hull for control points check box
-        showConvexHullControlPointsCheckBox = new JCheckBox("Show convex hull for control points (buggy)", true);
+        showConvexHullControlPointsCheckBox = new JCheckBox("Show convex hull for control points (buggy)", false);
         configureCheckBox(showConvexHullControlPointsCheckBox);
 
         // setup reset button

@@ -1,7 +1,7 @@
 package wpcg.bezier.viz;
 
 import com.jme3.math.Vector2f;
-import wpcg.MainFrame;
+import wpcg.MainWindow;
 import wpcg.base.canvas2d.Canvas2D;
 import wpcg.bezier.algorithms.DeCasteljau;
 import wpcg.bezier.algorithms.QuickHull;
@@ -16,12 +16,13 @@ import java.util.List;
 
 
 public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeListener, MouseMotionListener, ActionListener {
+    // Bounds of the canvas the curve is displayed on
     private static final int BOUNDS = 300;
+
     private HashMap<Float, List<Vector2f>> intermediateSteps;
     private final ArrayList<Vector2f> controlPoints = new ArrayList<>();
     private final DeCasteljau casteljauMath;
-    private double increment = .01;
-    private final MainFrame container;
+    private final MainWindow container;
     private final List<Color> colors = new ArrayList<>();
     private Color currentColor;
 
@@ -30,18 +31,15 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     private boolean showControlPoints = true;
     private boolean showHelperLines = true;
     private boolean showHelperPoints = true;
-    private boolean showCurveLines = true;
-    private boolean showCurvePoints = true;
-
-
-
+    private boolean showCurveLines = false;
+    private boolean showCurvePoints = false;
     private boolean showCurrentCurvePoint = true;
-    private boolean showConvexHullControlPoints = true;
+    private boolean showConvexHullControlPoints = false;
 
     private Vector2f selectedControlPoint;
 
 
-    public DeCasteljauViz(MainFrame container) {
+    public DeCasteljauViz(MainWindow container) {
 
         super(1920, 1080, new Vector2f(-BOUNDS, -BOUNDS), new Vector2f(BOUNDS, BOUNDS));
         this.container = container;
@@ -58,10 +56,9 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
         controlPoints.add(new Vector2f(250,0));
 
         // calculate points on bezier curve with given increment
-        casteljauMath = new DeCasteljau(controlPoints, increment);
+        casteljauMath = new DeCasteljau(controlPoints, .01);
         casteljauMath.calcCurvePoints();
         intermediateSteps = casteljauMath.getIntermediateSteps();
-
     }
 
 
@@ -139,7 +136,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
             if (showCurvePoints) {
                 // draw curve points
-                for (Vector2f curvePoint : casteljauMath.getCurvePoints().values()) {
+                for (Vector2f curvePoint : casteljauMath.getCurvePointsForCurrent_t().values()) {
                     drawPoint(g, curvePoint, Color.CYAN);
                 }
 
@@ -150,7 +147,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
                 drawPoint(g, casteljauMath.getCurvePointList().get(1), Color.CYAN);
                 System.out.println(casteljauMath.getCurvePointList());
 
-                Iterator<Map.Entry<Float, Vector2f>> iterator = casteljauMath.getCurve().entrySet().iterator();
+                Iterator<Map.Entry<Float, Vector2f>> iterator = casteljauMath.getCurvePointsForSmallest_t().entrySet().iterator();
 
                 Map.Entry<Float, Vector2f> prev = iterator.next();
                 Map.Entry<Float, Vector2f> current = iterator.next();
