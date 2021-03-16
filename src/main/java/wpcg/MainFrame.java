@@ -2,7 +2,7 @@
 
 package wpcg;
 
-import wpcg.bezier._2D.viz.DeCasteljauViz;
+import wpcg.bezier.viz.DeCasteljauViz;
 import javax.swing.*;
 import java.awt.*;
 
@@ -36,8 +36,6 @@ public class MainFrame extends JFrame {
     JCheckBox showCurrentCurvePointCheckBox;
     // convex hull
     JCheckBox showConvexHullControlPointsCheckBox;
-    // convex hull
-    JCheckBox showConvexHullCurvePointsCheckBox;
     // reset option
     JButton resetButton;
     // canvas the bezier curve is drawn on
@@ -185,10 +183,6 @@ public class MainFrame extends JFrame {
 
     public JCheckBox getShowConvexHullControlPointsCheckBox() {
         return showConvexHullControlPointsCheckBox;
-    }
-
-    public JCheckBox getShowConvexHullCurvePointsCheckBox() {
-        return showConvexHullCurvePointsCheckBox;
     }
 
     public JCheckBox getShowCurrentCurvePointCheckBox() { return showCurrentCurvePointCheckBox; }

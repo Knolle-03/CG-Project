@@ -1,4 +1,4 @@
-package wpcg.bezier._2D.algorithm;
+package wpcg.bezier.algorithms;
 
 import com.jme3.math.Vector2f;
 
