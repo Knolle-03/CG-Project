@@ -26,7 +26,7 @@ public class DeCasteljau {
 
         for (float t = 0; t <= 1; t += 0.01) {
             // calculate the curve point of t and add it to the hash map
-            curve.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
+            curve.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, false));
         }
 
     }
@@ -35,7 +35,7 @@ public class DeCasteljau {
         // for each t <= 1.0
         for (float t = 0; t <= 1; t += increment) {
             // calculate the curve point of t and add it to the hash map
-            curvePoints.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
+            curvePoints.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, true));
         }
     }
 
@@ -50,16 +50,16 @@ public class DeCasteljau {
 
         for (float t = 0.0f; t <= 1.0005; t += increment) {
             // calculate the curve point of t and add it to the hash map
-            curvePoints.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
+            curvePoints.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, true));
         }
 
         for (float t = 0.0f; t <= 1.0005; t += 0.01) {
             // calculate the curve point of t and add it to the hash map
-            curve.put((Math.round(t * 100f) / 100f), calcCurvePoint(t));
+            curve.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, false));
         }
     }
 
-    private Vector2f calcCurvePoint(float t) {
+    private Vector2f calcCurvePoint(float t, boolean calcHelpers) {
         // aux list for copy of control points
         ArrayList<Vector2f> auxList = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public class DeCasteljau {
                     if (!tList.contains(v2)) tList.add(new Vector2f(v2));
                 }
             }
-            if (t > 0 && t < 1) intermediateSteps.put(t, tList);
+            if (calcHelpers && t > 0 && t < 1) intermediateSteps.put(t, tList);
 
         }
 

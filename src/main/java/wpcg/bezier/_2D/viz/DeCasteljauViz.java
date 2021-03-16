@@ -101,25 +101,11 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
             }
 
-//            if (showConvexHullCurvePoints) {
-//                List<Vector2f> convexHull = calcConvexHull(casteljauMath.getCurvePointList());
-//
-//                if (convexHull.size() > 2) {
-//                    for (int i = 0; i < convexHull.size() - 1; i++) {
-//                        drawLine(g, convexHull.get(i), convexHull.get(i + 1), Color.GREEN);
-//                    }
-//                    drawLine(g, convexHull.get(convexHull.size() - 1), convexHull.get(0), Color.GREEN);
-//                }
-//
-//            }
-
             if (showControlPointLines) {
                 for (int i = 1; i < controlPoints.size(); i++) {
                     drawLine(g, controlPoints.get(i), controlPoints.get(i - 1), Color.BLACK);
                 }
             }
-
-
 
             for (List<Vector2f> vList : intermediateSteps.values()) {
                 int currentSkippingIndex = controlPoints.size() - 2;
@@ -180,10 +166,6 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
                     current = iterator.next();
                     current_T = current.getKey();
                 }
-
-//                for (Map.Entry<Float, Vector2f> entry : casteljauMath.getCurve().entrySet()) {
-//                    if (entry.getKey() <= getCurrent_t())
-//                }
             }
 
             if (showCurveLines) {
