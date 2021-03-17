@@ -4,23 +4,24 @@ import com.jme3.math.Vector2f;
 
 import java.util.*;
 
+/**
+ * This class DeCasteljau contains methods to calculate a bezier curve using the de casteljau algorithm
+ *  @author Lennart Draeger
+ */
+
 public class DeCasteljau {
 
     private final ArrayList<Vector2f> controlPoints;
     private final HashMap<Float, Vector2f> curvePointsForCurrent_t = new LinkedHashMap<>();
     // maps a given t to a List of helper Points on the control line segments
     private final HashMap<Float, List<Vector2f>> intermediateSteps = new LinkedHashMap<>();
-
-
-
     private final HashMap<Float, Vector2f> curvePointsForSmallest_t = new LinkedHashMap<>();
-
+    // increment of t
     private double increment;
 
 
     public DeCasteljau(ArrayList<Vector2f> controlPoints, double increment) {
         if (increment > 1) throw new IllegalArgumentException("increment needs to be <= 1");
-
         this.controlPoints = controlPoints;
         this.increment = increment;
 
@@ -39,6 +40,7 @@ public class DeCasteljau {
         }
     }
 
+    // called to recalculate the curve point after every manipulation
     public void reCalcCurvePoints() {
         intermediateSteps.clear();
         curvePointsForCurrent_t.clear();
@@ -58,6 +60,14 @@ public class DeCasteljau {
             curvePointsForSmallest_t.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, false));
         }
     }
+
+    /**
+     * Method to calculate a point on the curve. Optionally the intermediate steps can also be saved.
+     *
+     * @param t within [0, 1] to calculate point on the bezier curve
+     * @param calcHelpers option to save intermediate steps of the calculation
+     * @return Vector representing the point on the bezier curve for the given t
+     */
 
     private Vector2f calcCurvePoint(float t, boolean calcHelpers) {
         // aux list for copy of control points
@@ -85,12 +95,12 @@ public class DeCasteljau {
             }
             if (calcHelpers && t > 0 && t < 1) intermediateSteps.put(t, tList);
         }
-
         // return calculated point
         return auxList.get(0);
     }
 
-    // get calculated points of the bezier curve
+    // ++++++++++++++++++++++ GETTERS / SETTERS ++++++++++++++++++++++
+
     public Map<Float, Vector2f> getCurvePointsForCurrent_t() {
         return curvePointsForCurrent_t;
     }

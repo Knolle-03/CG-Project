@@ -1,11 +1,14 @@
-
-
 package wpcg;
 
 import wpcg.bezier.viz.DeCasteljauViz;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Main window containing canvas and options menu
+ *
+ * @author Lennart Draeger
+ */
 
 public class MainWindow extends JFrame {
 
@@ -40,7 +43,6 @@ public class MainWindow extends JFrame {
     JButton resetButton;
     // canvas the bezier curve is drawn on
     DeCasteljauViz canvas;
-
 
     public MainWindow() {
         setupCG2D();
@@ -103,7 +105,7 @@ public class MainWindow extends JFrame {
         configureCheckBox(showCurrentCurvePointCheckBox);
 
         // setup convex hull for control points check box
-        showConvexHullControlPointsCheckBox = new JCheckBox("Show convex hull for control points (buggy)", false);
+        showConvexHullControlPointsCheckBox = new JCheckBox("Show convex hull for control points", false);
         configureCheckBox(showConvexHullControlPointsCheckBox);
 
         // setup reset button
@@ -143,7 +145,7 @@ public class MainWindow extends JFrame {
         optionsMenu.add(checkBox);
     }
 
-    // ++++++++++++++++++++++ GETTERS ++++++++++++++++++++++
+    // ++++++++++++++++++++++ Getters ++++++++++++++++++++++
 
     public JSlider getIncrementSlider() {
         return incrementSlider;
