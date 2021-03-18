@@ -1,11 +1,11 @@
-package wpcg.bezier.algorithms;
+package wpcg.beziercurves.algorithms;
 
 import com.jme3.math.Vector2f;
 
 import java.util.*;
 
 /**
- * This class DeCasteljau contains methods to calculate a bezier curve using the de casteljau algorithm
+ * This class contains methods to calculate a bezier curve using the de casteljau algorithm
  *  @author Lennart Draeger
  */
 
@@ -13,9 +13,11 @@ public class DeCasteljau {
 
     private final ArrayList<Vector2f> controlPoints;
     private final HashMap<Float, Vector2f> curvePointsForCurrent_t = new LinkedHashMap<>();
+
     // maps a given t to a List of helper Points on the control line segments
     private final HashMap<Float, List<Vector2f>> intermediateSteps = new LinkedHashMap<>();
     private final HashMap<Float, Vector2f> curvePointsForSmallest_t = new LinkedHashMap<>();
+
     // increment of t
     private double increment;
 
@@ -24,24 +26,10 @@ public class DeCasteljau {
         if (increment > 1) throw new IllegalArgumentException("increment needs to be <= 1");
         this.controlPoints = controlPoints;
         this.increment = increment;
-
-        for (float t = 0; t <= 1; t += 0.01) {
-            // calculate the curve point of t and add it to the hash map
-            curvePointsForSmallest_t.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, false));
-        }
-
     }
 
     public void calcCurvePoints() {
-        // for each t <= 1.0
-        for (float t = 0; t <= 1; t += increment) {
-            // calculate the curve point of t and add it to the hash map
-            curvePointsForCurrent_t.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, true));
-        }
-    }
 
-    // called to recalculate the curve point after every manipulation
-    public void reCalcCurvePoints() {
         intermediateSteps.clear();
         curvePointsForCurrent_t.clear();
         curvePointsForSmallest_t.clear();
@@ -50,12 +38,13 @@ public class DeCasteljau {
             controlPoints.add(new Vector2f(0, 0));
         }
 
-        for (float t = 0.0f; t <= 1.0005; t += increment) {
+        // for each t <= 1.0
+        for (float t = 0; t <= 1; t += increment) {
             // calculate the curve point of t and add it to the hash map
             curvePointsForCurrent_t.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, true));
         }
 
-        for (float t = 0.0f; t <= 1.0005; t += 0.01) {
+        for (float t = 0; t <= 1; t += 0.01) {
             // calculate the curve point of t and add it to the hash map
             curvePointsForSmallest_t.put((Math.round(t * 100f) / 100f), calcCurvePoint(t, false));
         }
@@ -65,11 +54,11 @@ public class DeCasteljau {
      * Method to calculate a point on the curve. Optionally the intermediate steps can also be saved.
      *
      * @param t within [0, 1] to calculate point on the bezier curve
-     * @param calcHelpers option to save intermediate steps of the calculation
+     * @param saveHelpers option to save intermediate steps of the calculation
      * @return Vector representing the point on the bezier curve for the given t
      */
 
-    private Vector2f calcCurvePoint(float t, boolean calcHelpers) {
+    private Vector2f calcCurvePoint(float t, boolean saveHelpers) {
         // aux list for copy of control points
         ArrayList<Vector2f> auxList = new ArrayList<>();
 
@@ -88,12 +77,12 @@ public class DeCasteljau {
                 // newPoint = startPoint + t * (endPoint - startPoint)
                 Vector2f v = auxList.get(i).add((auxList.get(i + 1).subtract(auxList.get(i))).mult(t));
                 auxList.set(i, v);
-                if (calcHelpers && t > 0 && t < 1) {
+                if (saveHelpers && t > 0 && t < 1) {
                     Vector2f v2 = new Vector2f(v);
                     if (!tList.contains(v2)) tList.add(new Vector2f(v2));
                 }
             }
-            if (calcHelpers && t > 0 && t < 1) intermediateSteps.put(t, tList);
+            if (saveHelpers && t > 0 && t < 1) intermediateSteps.put(t, tList);
         }
         // return calculated point
         return auxList.get(0);

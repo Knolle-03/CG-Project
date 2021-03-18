@@ -18,6 +18,6 @@ IntelliJ Import -> Gradle project
 
 ### 2D Main Application: 
 
-* `wpcg.MainWindow`
+* `wpcg.beziercurves.MainWindow`
 * with example content `wpcg.base.canvas2d.Canvas2D` 
             

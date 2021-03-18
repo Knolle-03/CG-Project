@@ -1,10 +1,10 @@
-package wpcg.bezier.viz;
+package wpcg.beziercurves.viz;
 
 import com.jme3.math.Vector2f;
-import wpcg.MainWindow;
+import wpcg.beziercurves.MainWindow;
 import wpcg.base.canvas2d.Canvas2D;
-import wpcg.bezier.algorithms.DeCasteljau;
-import wpcg.bezier.algorithms.QuickHull;
+import wpcg.beziercurves.algorithms.DeCasteljau;
+import wpcg.beziercurves.algorithms.QuickHull;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -128,7 +128,6 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
 
             if (showHelperPoints) paintHelperPoints(g, vList);
 
-
             if (showHelperLines) {
                 // draw helper lines
                 for (int i = 0; i < vList.size() - 1; i++) {
@@ -249,7 +248,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == container.getIncrementSlider()) {
             casteljauMath.setIncrement(getCurrent_t());
-            casteljauMath.reCalcCurvePoints();
+            casteljauMath.calcCurvePoints();
             container.getIncrementLabel().setText("t: " + getCurrent_t());
             repaint();
         } else if (e.getSource() == container.getShowHelperLinesCheckBox()) {
@@ -303,7 +302,7 @@ public class DeCasteljauViz extends Canvas2D implements MouseListener, ChangeLis
     }
 
     private void reCalcDeCasteljau() {
-        casteljauMath.reCalcCurvePoints();
+        casteljauMath.calcCurvePoints();
     }
 
     // ++++++++++++++++++++++ Getters / Setters ++++++++++++++++++++++

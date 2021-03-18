@@ -1,4 +1,4 @@
-package wpcg.bezier.algorithms;
+package wpcg.beziercurves.algorithms;
 
 import com.jme3.math.Vector2f;
 
@@ -76,7 +76,7 @@ public class QuickHull {
         aboveAndBelow(subList, v1, farthest, abovePC, null);
         aboveAndBelow(subList, farthest, v2,  aboveCQ, null);
 
-        // recursive descent
+        // recursive entry
         findHull(abovePC, v1, farthest, convexHull);
         findHull(aboveCQ, farthest, v2, convexHull);
     }

@@ -1,6 +1,6 @@
-package wpcg;
+package wpcg.beziercurves;
 
-import wpcg.bezier.viz.DeCasteljauViz;
+import wpcg.beziercurves.viz.DeCasteljauViz;
 import javax.swing.*;
 import java.awt.*;
 
@@ -35,7 +35,7 @@ public class MainWindow extends JFrame {
     // curve options
     JCheckBox showCurveLinesCheckBox;
     JCheckBox showCurvePointsCheckBox;
-
+    // check box to display only one curve point
     JCheckBox showCurrentCurvePointCheckBox;
     // convex hull
     JCheckBox showConvexHullControlPointsCheckBox;
@@ -114,6 +114,8 @@ public class MainWindow extends JFrame {
         resetButton.addActionListener(canvas);
         optionsMenu.add(resetButton);
     }
+
+    // ++++++++++++++++++++++ helper methods ++++++++++++++++++++++00
 
     // setup options menu
     private void setupOptionsMenu() {
